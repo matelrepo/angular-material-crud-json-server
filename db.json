@@ -1,10 +1,24 @@
 {
   "productList": [
-
+    {
+      "productName": "pomme",
+      "category": "Electronic",
+      "freshness": "Refurbished",
+      "price": 12,
+      "comment": "sdfsdfsdfsdf",
+      "date": "2022-06-14T22:00:00.000Z",
+      "id": 8
+    },
+    {
+      "productName": "apple",
+      "category": "Vegetables",
+      "freshness": "Brand New",
+      "price": 1,
+      "comment": "asdasds",
+      "date": "2022-06-08T22:00:00.000Z",
+      "id": 9
+    }
   ],
-  "comments": [
-
-  ],
-  "profile": {
-  }
+  "comments": [],
+  "profile": {}
 }

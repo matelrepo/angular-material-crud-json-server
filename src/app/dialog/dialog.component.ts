@@ -1,4 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Inject, OnInit} from '@angular/core';
+import {FormGroup, FormBuilder, Validators} from "@angular/forms";
+import {ApiService} from "../services/api.service";
+import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
 
 @Component({
   selector: 'app-dialog',
@@ -7,9 +10,58 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DialogComponent implements OnInit {
 
-  constructor() { }
+  updateMode: boolean = false;
+  freshnessList =["Brand New", "Second hand", "Refurbished"];
+  productForm !: FormGroup;
+
+  constructor(private formBuilder: FormBuilder,
+              private api: ApiService,
+              @Inject(MAT_DIALOG_DATA) public editData: any,
+              private dialogRef: MatDialogRef<DialogComponent>,) { }
 
   ngOnInit(): void {
+    this.productForm = this.formBuilder.group({
+      productName: ['', Validators.required],
+      category: ['', Validators.required],
+      freshness: ['', Validators.required],
+      price: ['', Validators.required],
+      comment: ['', Validators.required],
+      date: ['', Validators.required],
+    })
+
+    if(this.editData){
+      this.updateMode = !this.updateMode;
+      this.productForm.controls['productName'].setValue(this.editData.productName);
+      this.productForm.controls['category'].setValue(this.editData.category);
+      this.productForm.controls['freshness'].setValue(this.editData.freshness);
+      this.productForm.controls['price'].setValue(this.editData.price);
+      this.productForm.controls['comment'].setValue(this.editData.comment);
+      this.productForm.controls['date'].setValue(this.editData.date);
+
+    }
+
+  }
+
+  addProduct(){
+    if(this.updateMode){
+      this.api.updateProduct(this.productForm.value, this.editData.id).subscribe({
+        next:(res)=>{
+          this.productForm.reset;
+          this.dialogRef.close('update');
+        }
+      });
+    }else{
+      if(this.productForm.valid){
+        this.api.postProduct(this.productForm.value).subscribe({
+          next: (res)=>{
+            this.productForm.reset();
+            this.dialogRef.close('save');
+          },error:()=>{
+          }
+        })
+
+      }
+    }
   }
 
 }
